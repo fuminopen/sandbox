@@ -2,13 +2,14 @@
 
 namespace Tests\Unit;
 
+use App\Services\BookingService;
 use App\Services\SlackService;
 use DG\BypassFinals;
 use Mockery;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
-class SlackTest extends TestCase
+class BookingServiceTest extends TestCase
 {
     public function testCanSendSlackMessage(): void
     {
@@ -19,12 +20,21 @@ class SlackTest extends TestCase
         $mock = Mockery::mock(
             SlackService::class,
             function (MockInterface $m) {
-                // モックの振る舞いを定義する
+                $m->shouldReceive('send')
+                    ->once()
+                    ->andReturn(true);
 
                 return $m;
             }
         );
 
+        $this->instance(
+            SlackService::class,
+            $mock
+        );
+
+        $sut = app()->make(BookingService::class);
+        $this->assertTrue($sut->book());
         // モックを利用する
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-final class SlackService
+final readonly class SlackService
 {
     public function send(): bool
     {
